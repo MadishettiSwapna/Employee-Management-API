@@ -1,10 +1,12 @@
 from flask import Blueprint, request
+from flask_jwt_extended import create_access_token
 from models.user import User
 import bcrypt
 from database.database import db
 auth = Blueprint("auth", __name__)
 
 @auth.route("/register", methods=["POST"])
+
 def register():
 
     data = request.get_json()
@@ -47,7 +49,9 @@ def register():
     return {
         "message": "User registered successfully."
     }, 201
+
 @auth.route("/login", methods=["POST"])
+
 def login():
 
     data = request.get_json()
@@ -75,6 +79,9 @@ def login():
             "error": "Invalid password."
         }, 401
 
+    access_token = create_access_token(identity=user.email)
+
     return {
-        "message": "Login Successful"
+        "message": "Login Successful",
+        "access_token": access_token
     }, 200
