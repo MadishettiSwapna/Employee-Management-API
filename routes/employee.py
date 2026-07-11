@@ -83,3 +83,74 @@ def get_employees():
         })
 
     return employee_list, 200
+
+@employee.route("/employees/<int:id>", methods=["GET"])
+
+@jwt_required()
+
+def get_employee(id):
+
+    employee = Employee.query.get(id)
+
+    if not employee:
+        return {
+            "error": "Employee not found."
+        }, 404
+
+    return {
+        "id": employee.id,
+        "name": employee.name,
+        "department": employee.department,
+        "designation": employee.designation,
+        "salary": employee.salary,
+        "email": employee.email,
+        "phone": employee.phone
+    }, 200
+
+@employee.route("/employees/<int:id>", methods=["PUT"])
+
+@jwt_required()
+
+def update_employee(id):
+
+    employee = Employee.query.get(id)
+
+    if not employee:
+        return {
+            "error": "Employee not found."
+        }, 404
+
+    data = request.get_json()
+
+    employee.name = data.get("name", employee.name)
+    employee.department = data.get("department", employee.department)
+    employee.designation = data.get("designation", employee.designation)
+    employee.salary = data.get("salary", employee.salary)
+    employee.email = data.get("email", employee.email)
+    employee.phone = data.get("phone", employee.phone)
+
+    db.session.commit()
+
+    return {
+        "message": "Employee updated successfully."
+    }, 200
+
+@employee.route("/employees/<int:id>", methods=["DELETE"])
+
+@jwt_required()
+
+def delete_employee(id):
+
+    employee = Employee.query.get(id)
+
+    if not employee:
+        return {
+            "error": "Employee not found."
+        }, 404
+
+    db.session.delete(employee)
+    db.session.commit()
+
+    return {
+        "message": "Employee deleted successfully."
+    }, 200
