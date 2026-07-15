@@ -6,8 +6,28 @@ from database.database import db
 auth = Blueprint("auth", __name__)
 
 @auth.route("/register", methods=["POST"])
-
 def register():
+    """
+    Register a new user
+    ---
+    tags:
+      - Authentication
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            username:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+    responses:
+      201:
+        description: User registered successfully
+    """
 
     data = request.get_json()
 
@@ -35,14 +55,13 @@ def register():
         bcrypt.gensalt()
     ).decode("utf-8")
 
-    # Create user
     new_user = User(
         username=username,
         email=email,
-        password=hashed_password
+        password=hashed_password,
+        role="user"
     )
 
-    # Save user
     db.session.add(new_user)
     db.session.commit()
 
@@ -50,9 +69,35 @@ def register():
         "message": "User registered successfully."
     }, 201
 
-@auth.route("/login", methods=["POST"])
 
+@auth.route("/login", methods=["POST"])
 def login():
+    """
+    Login user.
+    ---
+    tags:
+      - Authentication
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: swapna@gmail.com
+              password:
+                type: string
+                example: Swapna@123
+    responses:
+      200:
+        description: Login successful.
+      401:
+        description: Invalid credentials.
+      404:
+        description: User not found.
+    """   
 
     data = request.get_json()
 

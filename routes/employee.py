@@ -2,12 +2,24 @@ from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.employee import Employee
 from database.database import db
+from utils.decorators import admin_required
 
 employee = Blueprint("employee", __name__)
 
 @employee.route("/dashboard", methods=["GET"])
 @jwt_required()
 def dashboard():
+    """
+    Dashboard
+    ---
+    tags:
+      - Dashboard
+    security:
+      - BearerAuth: []
+    responses:
+      200:
+        description: Dashboard loaded successfully.
+    """
 
     current_user = get_jwt_identity()
 
@@ -18,7 +30,36 @@ def dashboard():
     
 @employee.route("/employees", methods=["POST"])
 @jwt_required()
+@admin_required
 def create_employee():
+    """
+    Create employee.
+    ---
+    tags:
+      - Employees
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              department:
+                type: string
+              designation:
+                type: string
+              salary:
+                type: integer
+              email:
+                type: string
+              phone:
+                type: string
+    responses:
+      201:
+        description: Employee created.
+    """
 
     data = request.get_json()
 
@@ -62,16 +103,67 @@ def create_employee():
     }, 201
 
 @employee.route("/employees", methods=["GET"])
-
 @jwt_required()
-
 def get_employees():
+    """
+    Get all employees.
+    ---
+    tags:
+      - Employees
+    parameters:
+      - name: department
+        in: query
+        schema:
+          type: string
+      - name: designation
+        in: query
+        schema:
+          type: string
+      - name: name
+        in: query
+        schema:
+          type: string
+      - name: page
+        in: query
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Employee list.
+    """
+    department = request.args.get("department")
+    designation = request.args.get("designation")
+    name = request.args.get("name")
 
-    employees = Employee.query.all()
+    query = Employee.query
+
+    if department:
+        query = query.filter(
+            Employee.department.ilike(f"%{department}%")
+        )
+
+    if designation:
+        query = query.filter(
+            Employee.designation.ilike(f"%{designation}%")
+        )
+    if name:
+        query = query.filter(Employee.name.ilike(f"%{name}%"))
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 10, type=int)
+
+    employees = query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
+    )
 
     employee_list = []
 
-    for emp in employees:
+    for emp in employees.items:
         employee_list.append({
             "id": emp.id,
             "name": emp.name,
@@ -82,15 +174,38 @@ def get_employees():
             "phone": emp.phone
         })
 
-    return employee_list, 200
+    return {
+    "page": employees.page,
+    "per_page": employees.per_page,
+    "total": employees.total,
+    "pages": employees.pages,
+    "employees": employee_list
+    }, 200
 
 @employee.route("/employees/<int:id>", methods=["GET"])
 
 @jwt_required()
 
 def get_employee(id):
+    """
+    Get employee by ID.
+    ---
+    tags:
+      - Employees
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Employee found.
+      404:
+        description: Employee not found.
+    """
 
-    employee = Employee.query.get(id)
+    employee = db.session.get(Employee, id)
 
     if not employee:
         return {
@@ -111,9 +226,27 @@ def get_employee(id):
 
 @jwt_required()
 
+@admin_required
 def update_employee(id):
+    """
+    Update employee.
+    ---
+    tags:
+      - Employees
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Employee updated.
+      404:
+        description: Employee not found.
+    """
 
-    employee = Employee.query.get(id)
+    employee = db.session.get(Employee, id)
 
     if not employee:
         return {
@@ -138,10 +271,27 @@ def update_employee(id):
 @employee.route("/employees/<int:id>", methods=["DELETE"])
 
 @jwt_required()
-
+@admin_required
 def delete_employee(id):
+    """
+    Delete employee.
+    ---
+    tags:
+      - Employees
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    responses:
+      200:
+        description: Employee deleted.
+      404:
+        description: Employee not found.
+    """
 
-    employee = Employee.query.get(id)
+    employee = db.session.get(Employee, id)
 
     if not employee:
         return {
