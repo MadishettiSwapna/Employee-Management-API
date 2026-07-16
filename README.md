@@ -76,7 +76,7 @@ Employee-Management-API/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/MadishettiSwapna/Employee-Management-API.git
+git clone https://github.com/your-username/Employee-Management-API.git
 
 cd Employee-Management-API
 ```
@@ -292,7 +292,7 @@ All endpoints were tested successfully using Postman.
 
 ---
 
-# Future Improvements
+## Future Improvements
 
 - Develop a responsive frontend using React.js
 - Integrate the frontend with the Flask REST API
@@ -305,7 +305,6 @@ All endpoints were tested successfully using Postman.
 - Add Email Verification and Password Reset
 - Add Pagination, Search, and Filtering for employee records
 - Deploy the application using Render, Railway, or AWS
-
 
 ---
 
