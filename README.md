@@ -4,19 +4,20 @@ A secure Employee Management REST API built with **Flask**, **JWT Authentication
 
 ---
 
-## Future Improvements
-
-- Develop a responsive frontend using React.js
-- Integrate the frontend with the Flask REST API
-- Complete Swagger/OpenAPI documentation
-- Migrate from SQLite to PostgreSQL or MySQL
-- Add Docker Compose for multi-container deployment
-- Implement CI/CD using GitHub Actions
-- Add Unit and Integration Testing
-- Implement API Rate Limiting
-- Add Email Verification and Password Reset
-- Add Pagination, Search, and Filtering for employee records
-- Deploy the application using Render, Railway, or AWS
+## Features
+- User Registration
+- User Login
+- JWT Authentication
+- Password Hashing using bcrypt
+- Role-Based Access Control (RBAC)
+- Employee CRUD Operations
+- SQLAlchemy ORM
+- SQLite Database
+- Environment Variables using `.env`
+- Dockerized Application
+- Persistent SQLite Database using Docker Volume Mounting
+- RESTful API
+- Tested using Postman
 
 ---
 
@@ -293,12 +294,18 @@ All endpoints were tested successfully using Postman.
 
 # Future Improvements
 
-- Swagger / OpenAPI Documentation
-- PostgreSQL Integration
-- Docker Compose
-- CI/CD using GitHub Actions
-- Unit Testing
-- API Rate Limiting
+- Develop a responsive frontend using React.js
+- Integrate the frontend with the Flask REST API
+- Complete Swagger/OpenAPI documentation
+- Migrate from SQLite to PostgreSQL or MySQL
+- Add Docker Compose for multi-container deployment
+- Implement CI/CD using GitHub Actions
+- Add Unit and Integration Testing
+- Implement API Rate Limiting
+- Add Email Verification and Password Reset
+- Add Pagination, Search, and Filtering for employee records
+- Deploy the application using Render, Railway, or AWS
+
 
 ---
 
